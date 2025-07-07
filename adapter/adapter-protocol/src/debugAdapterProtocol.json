@@ -2320,6 +2320,31 @@
 			}]
 		},
 
+		"SelectedFrameRequest": {
+			"allOf": [ { "$ref": "#/definitions/Request" }, {
+				"type": "object",
+				"description": "The request retrieves the selected frame."
+			}]
+		},
+		"SelectedFrameResponse": {
+			"allOf": [ { "$ref": "#/definitions/Response" }, {
+				"type": "object",
+				"description": "Response to `selectedFrame` request.",
+				"properties": {
+					"body": {
+						"type": "object",
+						"properties": {
+							"frame": {
+							    "type": "integer",
+								"description": "The selected stackframe."
+							}
+						}
+					}
+				},
+				"required": [ "body" ]
+			}]
+		},
+
 		"ThreadsRequest": {
 			"allOf": [ { "$ref": "#/definitions/Request" }, {
 				"type": "object",

@@ -1,3 +1,5 @@
+use std::num::NonZero;
+
 use super::*;
 
 cpp_class!(pub unsafe struct SBFrame as "SBFrame");
@@ -50,6 +52,11 @@ impl SBFrame {
     pub fn module(&self) -> SBModule {
         cpp!(unsafe [self as "SBFrame*"] -> SBModule as "SBModule" {
             return self->GetModule();
+        })
+    }
+    pub fn id(&self) -> u32 {
+        cpp!(unsafe [self as "SBFrame*"] -> u32 as "uint32_t" {
+            return self->GetFrameID();
         })
     }
     pub fn pc_address(&self) -> SBAddress {

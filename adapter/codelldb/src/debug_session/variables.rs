@@ -10,6 +10,7 @@ use super::AsyncResponse;
 use adapter_protocol::*;
 use futures::future;
 use lldb::*;
+use log::log;
 
 use std::borrow::Cow;
 use std::collections::HashMap;
@@ -436,10 +437,22 @@ impl super::DebugSession {
                     }
                 }
             }
-            None => None,
+            None => {
+                let thread = self.target.process().selected_thread();
+                let frame = thread.selected_frame();
+                Some(frame)
+            }
         };
 
         let context = args.context.as_ref().map(|s| s.as_ref());
+        debug!("console_mode: {:?}", self.console_mode);
+        println!("console_mode: {:?}", self.console_mode);
+        log!(
+            log::Level::Error,
+            "console_mode: {:?} frame: {:?}",
+            self.console_mode,
+            frame
+        );
         let result = match context {
             Some("repl") => match self.console_mode {
                 ConsoleMode::Commands => {

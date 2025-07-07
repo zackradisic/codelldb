@@ -431,6 +431,9 @@ impl DebugSession {
                         RequestArguments::threads(_) =>
                             self.handle_threads()
                                 .map(|r| ResponseBody::threads(r)),
+                        RequestArguments::selectedFrame(_) =>
+                            self.handle_selected_frame()
+                                .map(|r| ResponseBody::selectedFrame(r)),
                         RequestArguments::stackTrace(args) =>
                             self.handle_stack_trace(args)
                                 .map(|r| ResponseBody::stackTrace(r)),
@@ -683,6 +686,14 @@ impl DebugSession {
             });
         }
         Ok(response)
+    }
+
+    fn handle_selected_frame(&mut self) -> Result<SelectedFrameResponseBody, Error> {
+        let thread = self.target.process().selected_thread();
+        let frame = thread.selected_frame();
+        Ok(SelectedFrameResponseBody {
+            frame: Some(frame.id() as i64),
+        })
     }
 
     fn handle_stack_trace(&mut self, args: StackTraceArguments) -> Result<StackTraceResponseBody, Error> {
@@ -1676,6 +1687,7 @@ impl DebugSession {
                 let process = target.process();
                 if process.is_valid() {
                     let thread = process.selected_thread();
+                    log::log!(log::Level::Error, "thread: {:?}", thread.thread_id());
                     SBExecutionContext::from_thread(&thread)
                 } else {
                     SBExecutionContext::from_target(&target)
