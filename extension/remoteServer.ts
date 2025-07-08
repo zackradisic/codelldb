@@ -11,7 +11,6 @@ interface ExecuteLldbCommandRequest {
   command: "executeLldbCommand";
   lldb_command: string;
   id: string;
-  frameId?: number;
 }
 
 interface ExecuteLldbCommandResponse {
@@ -28,10 +27,6 @@ type Message = ExecuteLldbCommandRequest | ExecuteLldbCommandResponse;
 export class RemoteServer {
   private wss: WebSocketServer | null = null;
   private clients: Set<WebSocket> = new Set();
-  private pendingRequests: Map<
-    string,
-    (response: ExecuteLldbCommandResponse) => void
-  > = new Map();
   private debugSession: DebugSession | null = null;
 
   constructor() {}
@@ -146,7 +141,6 @@ export class RemoteServer {
       // Send the command to the debug adapter
       const response = await this.debugSession.customRequest("evaluate", {
         expression: request.lldb_command,
-        frameId: request.frameId,
         context: "_command",
       });
 

@@ -54,11 +54,6 @@ impl SBFrame {
             return self->GetModule();
         })
     }
-    pub fn id(&self) -> u32 {
-        cpp!(unsafe [self as "SBFrame*"] -> u32 as "uint32_t" {
-            return self->GetFrameID();
-        })
-    }
     pub fn pc_address(&self) -> SBAddress {
         cpp!(unsafe [self as "SBFrame*"] -> SBAddress as "SBAddress" {
             return self->GetPCAddress();
