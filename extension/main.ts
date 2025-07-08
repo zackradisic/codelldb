@@ -25,6 +25,7 @@ import { pickSymbol } from './symbols';
 import { ReverseAdapterConnector } from './novsc/reverseConnector';
 import { UriLaunchServer, RpcLaunchServer } from './externalLaunch';
 import { AdapterSettingManager as AdapterSettingsManager } from './adapterSettings';
+import { RemoteServer } from './remoteServer';
 
 export let output = window.createOutputChannel('LLDB');
 
@@ -53,6 +54,7 @@ class Extension implements DebugAdapterDescriptorFactory {
     loadedModules: ModulesView;
     excludedCallers: ExcludedCallersView;
     rpcServer: RpcLaunchServer;
+    remoteServer: RemoteServer;
 
     constructor(context: ExtensionContext) {
         this.context = context;
@@ -91,6 +93,9 @@ class Extension implements DebugAdapterDescriptorFactory {
             if (event.affectsConfiguration('lldb.rpcServer')) {
                 this.updateRpcServer();
             }
+            if (event.affectsConfiguration('lldb.remoteServer')) {
+                this.updateRemoteServer();
+            }
         }));
 
         this.settingsManager = new AdapterSettingsManager(context);
@@ -104,7 +109,21 @@ class Extension implements DebugAdapterDescriptorFactory {
 
         subscriptions.push(window.registerUriHandler(new UriLaunchServer()));
 
+        // Listen for debug session changes
+        subscriptions.push(debug.onDidStartDebugSession(session => {
+            if (session.type === 'lldb' && this.remoteServer) {
+                this.remoteServer.setDebugSession(session);
+            }
+        }));
+
+        subscriptions.push(debug.onDidTerminateDebugSession(session => {
+            if (session.type === 'lldb' && this.remoteServer) {
+                this.remoteServer.setDebugSession(null);
+            }
+        }));
+
         this.updateRpcServer();
+        this.updateRemoteServer();
     }
 
     async onActivate() {
@@ -133,6 +152,9 @@ class Extension implements DebugAdapterDescriptorFactory {
         if (this.rpcServer) {
             this.rpcServer.close();
         }
+        if (this.remoteServer) {
+            this.remoteServer.close();
+        }
     }
 
     updateRpcServer() {
@@ -147,6 +169,25 @@ class Extension implements DebugAdapterDescriptorFactory {
             output.appendLine(`Starting RPC server with: ${inspect(options)}`);
             this.rpcServer = new RpcLaunchServer({ token: options.token });
             this.rpcServer.listen(options)
+        }
+    }
+
+    updateRemoteServer() {
+        if (this.remoteServer) {
+            output.appendLine('Stopping remote WebSocket server');
+            this.remoteServer.close();
+            this.remoteServer = null;
+        }
+        let config = getExtensionConfig();
+        let options = config.get('remoteServer') as any;
+        if (options) {
+            output.appendLine(`Starting remote WebSocket server with: ${inspect(options)}`);
+            this.remoteServer = new RemoteServer();
+            this.remoteServer.listen(options).then(port => {
+                output.appendLine(`Remote WebSocket server is listening on port ${port}`);
+            }).catch(err => {
+                output.appendLine(`Failed to start remote WebSocket server: ${err.message}`);
+            });
         }
     }
 

@@ -33,12 +33,14 @@
 	},
 	"dependencies": {
 		"string-argv": "^0.3.2",
-		"yaml": "^1.10.0"
+		"yaml": "^1.10.0",
+		"ws": "^8.18.0"
 	},
 	"devDependencies": {
 		"@types/vscode": "^1.60.0",
 		"@types/node": "^14.0.0",
 		"@types/mocha": "^10.0.0",
+		"@types/ws": "^8.5.0",
 		"@vscode/debugprotocol": "^1.53.0",
 		"@vscode/debugadapter-testsupport": "^1.51.0",
 		"typescript": "^4.7.0",
@@ -493,6 +495,22 @@
 						"default": null,
 						"scope": "window",
 						"order": 2
+					},
+					"lldb.remoteServer": {
+						"description": "Start a WebSocket server for remote debugger control via MCP.",
+						"type": [
+							"boolean",
+							"object"
+						],
+						"properties": {
+							"port": {
+								"type": "number",
+								"description": "Port to listen on. If not specified, a random port will be chosen."
+							}
+						},
+						"default": false,
+						"scope": "window",
+						"order": 3
 					},
 					"lldb.library": {
 						"markdownDescription": "Which LLDB library to use.\n\nThis can be either a file path (recommended) or a directory, in which case platform-specific heuristics will be used to locate the actual library file.",
