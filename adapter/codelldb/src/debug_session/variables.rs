@@ -418,6 +418,7 @@ impl super::DebugSession {
     }
 
     pub(super) fn handle_evaluate(&mut self, args: EvaluateArguments) -> Result<ResponseBody, Error> {
+        let context = args.context.as_ref().map(|s| s.as_ref());
         let frame = match args.frame_id {
             Some(frame_id) => {
                 let handle = handles::from_i64(frame_id)?;
@@ -438,21 +439,16 @@ impl super::DebugSession {
                 }
             }
             None => {
-                let thread = self.target.process().selected_thread();
-                let frame = thread.selected_frame();
-                Some(frame)
+                if args.context.as_ref().map(|s| s.as_ref()) == Some("remote") {
+                    let thread = self.target.process().selected_thread();
+                    let frame = thread.selected_frame();
+                    Some(frame)
+                } else {
+                    None
+                }
             }
         };
 
-        let context = args.context.as_ref().map(|s| s.as_ref());
-        debug!("console_mode: {:?}", self.console_mode);
-        println!("console_mode: {:?}", self.console_mode);
-        log!(
-            log::Level::Error,
-            "console_mode: {:?} frame: {:?}",
-            self.console_mode,
-            frame
-        );
         let result = match context {
             Some("repl") => match self.console_mode {
                 ConsoleMode::Commands => {
@@ -481,7 +477,7 @@ impl super::DebugSession {
                 result.map_err(|err| BlamedError::from(err).assign_blame(Blame::Nobody).into())
             }
             // out protocol extension for testing
-            Some("_command") => self.handle_execute_command(&args.expression, frame, true),
+            Some("_command") | Some("remote") => self.handle_execute_command(&args.expression, frame, true),
             // "watch"
             _ => self.handle_evaluate_expression(&args.expression, frame, false),
         };

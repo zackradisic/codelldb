@@ -1,6 +1,5 @@
 import { WebSocketServer, WebSocket } from "ws";
 import { DebugSession } from "vscode";
-import * as crypto from "crypto";
 import { output } from "./main";
 
 interface RemoteServerOptions {

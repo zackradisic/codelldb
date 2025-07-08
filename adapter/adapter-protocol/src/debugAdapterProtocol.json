@@ -2320,31 +2320,6 @@
 			}]
 		},
 
-		"SelectedFrameRequest": {
-			"allOf": [ { "$ref": "#/definitions/Request" }, {
-				"type": "object",
-				"description": "The request retrieves the selected frame."
-			}]
-		},
-		"SelectedFrameResponse": {
-			"allOf": [ { "$ref": "#/definitions/Response" }, {
-				"type": "object",
-				"description": "Response to `selectedFrame` request.",
-				"properties": {
-					"body": {
-						"type": "object",
-						"properties": {
-							"frame": {
-							    "type": "integer",
-								"description": "The selected stackframe."
-							}
-						}
-					}
-				},
-				"required": [ "body" ]
-			}]
-		},
-
 		"ThreadsRequest": {
 			"allOf": [ { "$ref": "#/definitions/Request" }, {
 				"type": "object",
@@ -2559,13 +2534,14 @@
 				},
 				"context": {
 					"type": "string",
-					"_enum": [ "watch", "repl", "hover", "clipboard", "variables" ],
+					"_enum": [ "watch", "repl", "hover", "clipboard", "variables", "remote" ],
 					"enumDescriptions": [
 						"evaluate is called from a watch view context.",
 						"evaluate is called from a REPL context.",
 						"evaluate is called to generate the debug hover contents.\nThis value should only be used if the corresponding capability `supportsEvaluateForHovers` is true.",
 						"evaluate is called to generate clipboard contents.\nThis value should only be used if the corresponding capability `supportsClipboardContext` is true.",
-						"evaluate is called from a variables view context."
+						"evaluate is called from a variables view context.",
+						"evaluate is called from a remote context."
 					],
 					"description": "The context in which the evaluate request is used."
 				},
