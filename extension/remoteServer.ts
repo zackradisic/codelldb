@@ -141,7 +141,7 @@ export class RemoteServer {
       // Send the command to the debug adapter
       const response = await this.debugSession.customRequest("evaluate", {
         expression: request.lldb_command,
-        context: "_command",
+        context: "remote",
       });
 
       this.sendResponse(ws, {

@@ -11,14 +11,14 @@ pub use crate::dap::{
     Module, ModuleEventBody, ModulesArguments, ModulesResponseBody, NextArguments, OutputEventBody, PauseArguments,
     ReadMemoryArguments, ReadMemoryResponseBody, RestartFrameArguments, ReverseContinueArguments,
     RunInTerminalRequestArguments, RunInTerminalResponseBody, Scope, ScopesArguments, ScopesResponseBody,
-    SelectedFrameResponseBody, SetBreakpointsArguments, SetBreakpointsResponseBody, SetDataBreakpointsArguments,
-    SetDataBreakpointsResponseBody, SetExceptionBreakpointsArguments, SetFunctionBreakpointsArguments,
-    SetInstructionBreakpointsArguments, SetInstructionBreakpointsResponseBody, SetVariableArguments,
-    SetVariableResponseBody, Source, SourceArguments, SourceBreakpoint, SourceResponseBody, StackFrame,
-    StackTraceArguments, StackTraceResponseBody, StepBackArguments, StepInArguments, StepInTarget,
-    StepInTargetsArguments, StepInTargetsResponseBody, StepOutArguments, SteppingGranularity, StoppedEventBody,
-    TerminateArguments, TerminatedEventBody, Thread, ThreadEventBody, ThreadsResponseBody, Variable,
-    VariablePresentationHint, VariablesArguments, VariablesResponseBody, WriteMemoryArguments, WriteMemoryResponseBody,
+    SetBreakpointsArguments, SetBreakpointsResponseBody, SetDataBreakpointsArguments, SetDataBreakpointsResponseBody,
+    SetExceptionBreakpointsArguments, SetFunctionBreakpointsArguments, SetInstructionBreakpointsArguments,
+    SetInstructionBreakpointsResponseBody, SetVariableArguments, SetVariableResponseBody, Source, SourceArguments,
+    SourceBreakpoint, SourceResponseBody, StackFrame, StackTraceArguments, StackTraceResponseBody, StepBackArguments,
+    StepInArguments, StepInTarget, StepInTargetsArguments, StepInTargetsResponseBody, StepOutArguments,
+    SteppingGranularity, StoppedEventBody, TerminateArguments, TerminatedEventBody, Thread, ThreadEventBody,
+    ThreadsResponseBody, Variable, VariablePresentationHint, VariablesArguments, VariablesResponseBody,
+    WriteMemoryArguments, WriteMemoryResponseBody,
 };
 
 use crate::vec_map::VecMap;
@@ -145,8 +145,6 @@ pub enum ResponseBody {
     stepBack,
     reverseContinue,
     threads(ThreadsResponseBody),
-    // lols
-    selectedFrame(SelectedFrameResponseBody),
     stackTrace(StackTraceResponseBody),
     scopes(ScopesResponseBody),
     source(SourceResponseBody),
