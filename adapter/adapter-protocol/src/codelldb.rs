@@ -90,7 +90,6 @@ pub enum RequestArguments {
     stepBack(StepBackArguments),
     reverseContinue(ReverseContinueArguments),
     threads(Option<NoArguments>),
-    selectedFrame(Option<NoArguments>),
     stackTrace(StackTraceArguments),
     scopes(ScopesArguments),
     source(SourceArguments),
